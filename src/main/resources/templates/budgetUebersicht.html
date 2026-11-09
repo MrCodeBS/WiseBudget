@@ -1,0 +1,132 @@
+{#include base}
+{#title}Übersicht - {budget.name}{/title}
+{#body}
+<h1>Übersicht: {budget.name} ({monat})</h1>
+
+<p>
+    <a href="/budgets/{budget.id}">Übersicht</a> |
+    <a href="/budgets/{budget.id}/einkommen">Einkommen</a> |
+    <a href="/budgets/{budget.id}/kategorien">Kategorien</a> |
+    <a href="/budgets/{budget.id}/mitglieder">Mitglieder</a>
+</p>
+
+{#if erfolg??}
+    <div class="erfolg">{erfolg}</div>
+{/if}
+
+{#if fehler??}
+    <div class="fehler">{fehler}</div>
+{/if}
+
+<form method="get" action="/budgets/{budget.id}">
+    <div class="form-group">
+        <label for="monat">Monat auswählen</label>
+        <input type="month" id="monat" name="monat" value="{monat}" required>
+        <button type="submit">Anzeigen</button>
+    </div>
+</form>
+
+<p><strong>Gesamtes Nettoeinkommen ({monat}):</strong> {gesamtNetto} CHF</p>
+
+<h2>Töpfe (50/30/20-Aufteilung)</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Topf</th>
+        <th>Anteil (%)</th>
+        <th>Zielbetrag (CHF)</th>
+        <th>Ausgegeben (CHF)</th>
+        <th>Verbleibend (CHF)</th>
+    </tr>
+    </thead>
+    <tbody>
+    {#for zeile in topfZeilen}
+        <tr>
+            <td>{zeile.topf}</td>
+            <td>{zeile.prozent}%</td>
+            <td>{zeile.zielbetrag}</td>
+            <td>{zeile.ausgegeben}</td>
+            <td>{zeile.verbleibend}</td>
+        </tr>
+    {/for}
+    </tbody>
+</table>
+
+<h2>Transaktionen im Monat {monat}</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Datum</th>
+        <th>Beschreibung</th>
+        <th>Kategorie</th>
+        <th>Topf</th>
+        <th>Betrag (CHF)</th>
+        <th>Erfasst von</th>
+        {#if schreibrecht}
+            <th>Aktionen</th>
+        {/if}
+    </tr>
+    </thead>
+    <tbody>
+    {#for tx in transaktionen}
+        <tr>
+            <td>{tx.datum}</td>
+            <td>{tx.beschreibung}</td>
+            <td>{tx.kategorie.name}</td>
+            <td>{tx.kategorie.topf}</td>
+            <td>{tx.betrag}</td>
+            <td>{tx.erfasstVon.name}</td>
+            {#if schreibrecht}
+                <td>
+                    <a href="/budgets/{budget.id}/transaktionen/{tx.id}/bearbeiten">Bearbeiten</a>
+                    <form method="post" action="/budgets/{budget.id}/transaktionen/{tx.id}/loeschen" style="display:inline; margin-left:8px;">
+                        <input type="hidden" name="monat" value="{monat}">
+                        <button type="submit">Löschen</button>
+                    </form>
+                </td>
+            {/if}
+        </tr>
+    {#else}
+        <tr>
+            <td colspan="7">Keine Transaktionen in diesem Monat vorhanden.</td>
+        </tr>
+    {/for}
+    </tbody>
+</table>
+
+{#if schreibrecht}
+    <h2>Neue Transaktion buchen</h2>
+    {#if kategorienListe.isEmpty}
+        <p>Bitte zuerst unter <a href="/budgets/{budget.id}/kategorien">Kategorien</a> mindestens eine Kategorie erstellen.</p>
+    {#else}
+        <form method="post" action="/budgets/{budget.id}/transaktionen">
+            <div class="form-group">
+                <label for="kategorieId">Kategorie</label>
+                <select id="kategorieId" name="kategorieId" required>
+                    {#for k in kategorienListe}
+                        <option value="{k.id}">{k.name} ({k.topf})</option>
+                    {/for}
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="betrag">Betrag (CHF)</label>
+                <input type="number" step="0.01" min="0.01" id="betrag" name="betrag" required>
+            </div>
+
+            <div class="form-group">
+                <label for="datum">Datum</label>
+                <input type="date" id="datum" name="datum" value="{heute}" required>
+            </div>
+
+            <div class="form-group">
+                <label for="beschreibung">Beschreibung</label>
+                <input type="text" id="beschreibung" name="beschreibung" required>
+            </div>
+
+            <button type="submit">Transaktion buchen</button>
+        </form>
+    {/if}
+{/if}
+{/body}
+{/include}

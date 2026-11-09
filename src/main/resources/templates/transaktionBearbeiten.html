@@ -1,0 +1,40 @@
+{#include base}
+{#title}Transaktion bearbeiten - {budget.name}{/title}
+{#body}
+<h1>Transaktion bearbeiten ({budget.name})</h1>
+
+<p><a href="/budgets/{budget.id}">Zurück zur Übersicht</a></p>
+
+{#if fehler??}
+    <div class="fehler">{fehler}</div>
+{/if}
+
+<form method="post" action="/budgets/{budget.id}/transaktionen/{transaktion.id}/bearbeiten">
+    <div class="form-group">
+        <label for="kategorieId">Kategorie</label>
+        <select id="kategorieId" name="kategorieId" required>
+            {#for k in kategorienListe}
+                <option value="{k.id}" {#if k.id == transaktion.kategorie.id}selected{/if}>{k.name} ({k.topf})</option>
+            {/for}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="betrag">Betrag (CHF)</label>
+        <input type="number" step="0.01" min="0.01" id="betrag" name="betrag" value="{transaktion.betrag}" required>
+    </div>
+
+    <div class="form-group">
+        <label for="datum">Datum</label>
+        <input type="date" id="datum" name="datum" value="{transaktion.datum}" required>
+    </div>
+
+    <div class="form-group">
+        <label for="beschreibung">Beschreibung</label>
+        <input type="text" id="beschreibung" name="beschreibung" value="{transaktion.beschreibung}" required>
+    </div>
+
+    <button type="submit">Speichern</button>
+</form>
+{/body}
+{/include}

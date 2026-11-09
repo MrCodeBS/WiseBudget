@@ -34,10 +34,14 @@ public class Benutzer {
     @Column(nullable = false)
     private String passwortHash;
 
-    @Roles
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Rolle rolle;
+
+    @Roles
+    public String getRolleName() {
+        return rolle != null ? rolle.name() : "USER";
+    }
 
     @Column(nullable = false)
     private LocalDate geburtsdatum;

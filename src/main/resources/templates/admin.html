@@ -1,0 +1,127 @@
+{#include base}
+{#title}Administration - WiseBudget{/title}
+{#body}
+<h1>Administration</h1>
+
+{#if erfolg??}
+    <div class="erfolg">{erfolg}</div>
+{/if}
+
+{#if fehler??}
+    <div class="fehler">{fehler}</div>
+{/if}
+
+<h2>Benutzerliste</h2>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>E-Mail</th>
+        <th>Rolle</th>
+        <th>Geburtsdatum</th>
+        <th>Erwerbsstatus</th>
+        <th>Kanton</th>
+    </tr>
+    </thead>
+    <tbody>
+    {#for b in benutzerListe}
+        <tr>
+            <td>{b.id}</td>
+            <td>{b.name}</td>
+            <td>{b.email}</td>
+            <td>{b.rolle}</td>
+            <td>{b.geburtsdatum}</td>
+            <td>{b.erwerbsstatus}</td>
+            <td>{b.kanton.kuerzel}</td>
+        </tr>
+    {/for}
+    </tbody>
+</table>
+
+<h2>Steuerregeln verwalten</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Kanton</th>
+        <th>Status</th>
+        <th>Alter (von - bis)</th>
+        <th>Einkommen CHF (von - bis)</th>
+        <th>Satz (%)</th>
+        <th>Jahr</th>
+        <th>Aktion</th>
+    </tr>
+    </thead>
+    <tbody>
+    {#for r in steuerregeln}
+        <tr>
+            <td>{r.kanton.kuerzel}</td>
+            <td>{r.erwerbsstatus}</td>
+            <td>{r.alterVon} - {r.alterBis}</td>
+            <td>{r.einkommenVon} - {r.einkommenBis}</td>
+            <td>{r.satzProzent}%</td>
+            <td>{r.gueltigJahr}</td>
+            <td>
+                <form method="post" action="/admin/steuerregeln/{r.id}/loeschen">
+                    <button type="submit">Löschen</button>
+                </form>
+            </td>
+        </tr>
+    {/for}
+    </tbody>
+</table>
+
+<h2>Neue Steuerregel erfassen</h2>
+<form method="post" action="/admin/steuerregeln">
+    <div class="form-group">
+        <label for="kantonId">Kanton</label>
+        <select id="kantonId" name="kantonId" required>
+            {#for k in kantone}
+                <option value="{k.id}">{k.name} ({k.kuerzel})</option>
+            {/for}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="erwerbsstatus">Erwerbsstatus</label>
+        <select id="erwerbsstatus" name="erwerbsstatus" required>
+            {#for s in erwerbsstatusListe}
+                <option value="{s}">{s}</option>
+            {/for}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="alterVon">Alter von</label>
+        <input type="number" id="alterVon" name="alterVon" value="18" required>
+    </div>
+
+    <div class="form-group">
+        <label for="alterBis">Alter bis</label>
+        <input type="number" id="alterBis" name="alterBis" value="65" required>
+    </div>
+
+    <div class="form-group">
+        <label for="einkommenVon">Einkommen von (CHF)</label>
+        <input type="number" step="0.01" id="einkommenVon" name="einkommenVon" required>
+    </div>
+
+    <div class="form-group">
+        <label for="einkommenBis">Einkommen bis (CHF)</label>
+        <input type="number" step="0.01" id="einkommenBis" name="einkommenBis" required>
+    </div>
+
+    <div class="form-group">
+        <label for="satzProzent">Steuersatz (%)</label>
+        <input type="number" step="0.01" id="satzProzent" name="satzProzent" required>
+    </div>
+
+    <div class="form-group">
+        <label for="gueltigJahr">Gültig für Jahr</label>
+        <input type="number" id="gueltigJahr" name="gueltigJahr" value="2026" required>
+    </div>
+
+    <button type="submit">Speichern</button>
+</form>
+{/body}
+{/include}

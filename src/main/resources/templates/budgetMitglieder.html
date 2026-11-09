@@ -1,0 +1,124 @@
+{#include base}
+{#title}Mitglieder - {budget.name}{/title}
+{#body}
+<h1>Budget: {budget.name}</h1>
+
+<p>
+    <a href="/budgets/{budget.id}">Übersicht</a> |
+    <a href="/budgets/{budget.id}/einkommen">Einkommen</a> |
+    <a href="/budgets/{budget.id}/kategorien">Kategorien</a> |
+    <a href="/budgets/{budget.id}/mitglieder">Mitglieder</a>
+</p>
+
+{#if erfolg??}
+    <div class="erfolg">{erfolg}</div>
+{/if}
+
+{#if fehler??}
+    <div class="fehler">{fehler}</div>
+{/if}
+
+<h2>Mitglieder</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>E-Mail</th>
+        <th>Berechtigung</th>
+        {#if meineMitgliedschaft.berechtigung.name == 'BESITZER'}
+            <th>Berechtigung ändern</th>
+            <th>Entfernen</th>
+        {/if}
+    </tr>
+    </thead>
+    <tbody>
+    {#for m in mitglieder}
+        <tr>
+            <td>{m.benutzer.name}</td>
+            <td>{m.benutzer.email}</td>
+            <td>{m.berechtigung}</td>
+            {#if meineMitgliedschaft.berechtigung.name == 'BESITZER'}
+                <td>
+                    <form method="post" action="/budgets/{budget.id}/mitglieder/{m.id}/berechtigung">
+                        <select name="berechtigung">
+                            {#for b in berechtigungen}
+                                <option value="{b}" {#if b == m.berechtigung}selected{/if}>{b}</option>
+                            {/for}
+                        </select>
+                        <button type="submit">Speichern</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="post" action="/budgets/{budget.id}/mitglieder/{m.id}/entfernen">
+                        <button type="submit">Löschen</button>
+                    </form>
+                </td>
+            {/if}
+        </tr>
+    {/for}
+    </tbody>
+</table>
+
+{#if meineMitgliedschaft.berechtigung.name == 'BESITZER'}
+    <h2>Mitglied hinzufügen</h2>
+    <form method="post" action="/budgets/{budget.id}/mitglieder">
+        <div class="form-group">
+            <label for="email">E-Mail des Benutzers</label>
+            <input type="email" id="email" name="email" required>
+        </div>
+
+        <div class="form-group">
+            <label for="berechtigung">Berechtigung</label>
+            <select id="berechtigung" name="berechtigung" required>
+                {#for b in berechtigungen}
+                    <option value="{b}">{b}</option>
+                {/for}
+            </select>
+        </div>
+
+        <button type="submit">Mitglied hinzufügen</button>
+    </form>
+
+    <h2>Budget bearbeiten</h2>
+    <form method="post" action="/budgets/{budget.id}/aktualisieren">
+        <input type="hidden" name="version" value="{budget.version}">
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" value="{budget.name}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="typ">Typ</label>
+            <select id="typ" name="typ" required>
+                {#for t in budgetTypen}
+                    <option value="{t}" {#if t == budget.typ}selected{/if}>{t}</option>
+                {/for}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="needsProzent">Needs (%)</label>
+            <input type="number" step="0.01" id="needsProzent" name="needsProzent" value="{budget.needsProzent}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="wantsProzent">Wants (%)</label>
+            <input type="number" step="0.01" id="wantsProzent" name="wantsProzent" value="{budget.wantsProzent}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="sparenProzent">Sparen (%)</label>
+            <input type="number" step="0.01" id="sparenProzent" name="sparenProzent" value="{budget.sparenProzent}" required>
+        </div>
+
+        <button type="submit">Speichern</button>
+    </form>
+
+    <h2>Budget löschen</h2>
+    <form method="post" action="/budgets/{budget.id}/loeschen">
+        <button type="submit">Löschen</button>
+    </form>
+{/if}
+{/body}
+{/include}

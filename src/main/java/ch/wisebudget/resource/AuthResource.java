@@ -39,6 +39,12 @@ public class AuthResource {
     }
 
     @GET
+    @Path("favicon.ico")
+    public Response favicon() {
+        return Response.noContent().build();
+    }
+
+    @GET
     @Path("login.html")
     public TemplateInstance loginSeite(@RestQuery boolean error, @RestQuery boolean registered) {
         return login.data("error", error)

@@ -1,0 +1,80 @@
+{#include base}
+{#title}Meine Budgets - WiseBudget{/title}
+{#body}
+<h1>Meine Budgets</h1>
+
+{#if erfolg??}
+    <div class="erfolg">{erfolg}</div>
+{/if}
+
+{#if fehler??}
+    <div class="fehler">{fehler}</div>
+{/if}
+
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Typ</th>
+        <th>Aufteilung (Needs / Wants / Sparen)</th>
+        <th>Meine Berechtigung</th>
+        <th>Aktionen</th>
+    </tr>
+    </thead>
+    <tbody>
+    {#for m in mitgliedschaften}
+        <tr>
+            <td>{m.budget.name}</td>
+            <td>{m.budget.typ}</td>
+            <td>{m.budget.needsProzent}% / {m.budget.wantsProzent}% / {m.budget.sparenProzent}%</td>
+            <td>{m.berechtigung}</td>
+            <td>
+                <a href="/budgets/{m.budget.id}">Übersicht</a> |
+                <a href="/budgets/{m.budget.id}/einkommen">Einkommen</a> |
+                <a href="/budgets/{m.budget.id}/kategorien">Kategorien</a> |
+                <a href="/budgets/{m.budget.id}/mitglieder">Mitglieder</a>
+            </td>
+        </tr>
+    {#else}
+        <tr>
+            <td colspan="5">Noch keine Budgets vorhanden.</td>
+        </tr>
+    {/for}
+    </tbody>
+</table>
+
+<h2>Neues Budget erstellen</h2>
+<form method="post" action="/budgets">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required>
+    </div>
+
+    <div class="form-group">
+        <label for="typ">Typ</label>
+        <select id="typ" name="typ" required>
+            {#for t in budgetTypen}
+                <option value="{t}">{t}</option>
+            {/for}
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="needsProzent">Needs (%)</label>
+        <input type="number" step="0.01" id="needsProzent" name="needsProzent" value="50.00" required>
+    </div>
+
+    <div class="form-group">
+        <label for="wantsProzent">Wants (%)</label>
+        <input type="number" step="0.01" id="wantsProzent" name="wantsProzent" value="30.00" required>
+    </div>
+
+    <div class="form-group">
+        <label for="sparenProzent">Sparen (%)</label>
+        <input type="number" step="0.01" id="sparenProzent" name="sparenProzent" value="20.00" required>
+    </div>
+
+    <button type="submit">Speichern</button>
+</form>
+{/body}
+{/include}

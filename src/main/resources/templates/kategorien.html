@@ -1,0 +1,85 @@
+{#include base}
+{#title}Kategorien - {budget.name}{/title}
+{#body}
+<h1>Kategorien: {budget.name}</h1>
+
+<p>
+    <a href="/budgets/{budget.id}">Übersicht</a> |
+    <a href="/budgets/{budget.id}/einkommen">Einkommen</a> |
+    <a href="/budgets/{budget.id}/kategorien">Kategorien</a> |
+    <a href="/budgets/{budget.id}/mitglieder">Mitglieder</a>
+</p>
+
+{#if erfolg??}
+    <div class="erfolg">{erfolg}</div>
+{/if}
+
+{#if fehler??}
+    <div class="fehler">{fehler}</div>
+{/if}
+
+<table>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Topf</th>
+        {#if schreibrecht}
+            <th>Umbenennen / Topf ändern</th>
+            <th>Löschen</th>
+        {/if}
+    </tr>
+    </thead>
+    <tbody>
+    {#for k in kategorienListe}
+        <tr>
+            <td>{k.name}</td>
+            <td>{k.topf}</td>
+            {#if schreibrecht}
+                <td>
+                    <form method="post" action="/budgets/{budget.id}/kategorien/{k.id}/umbenennen">
+                        <input type="text" name="name" value="{k.name}" required>
+                        <select name="topf">
+                            {#for t in toepfe}
+                                <option value="{t}" {#if t == k.topf}selected{/if}>{t}</option>
+                            {/for}
+                        </select>
+                        <button type="submit">Speichern</button>
+                    </form>
+                </td>
+                <td>
+                    <form method="post" action="/budgets/{budget.id}/kategorien/{k.id}/loeschen">
+                        <button type="submit">Löschen</button>
+                    </form>
+                </td>
+            {/if}
+        </tr>
+    {#else}
+        <tr>
+            <td colspan="4">Noch keine Kategorien vorhanden.</td>
+        </tr>
+    {/for}
+    </tbody>
+</table>
+
+{#if schreibrecht}
+    <h2>Neue Kategorie erstellen</h2>
+    <form method="post" action="/budgets/{budget.id}/kategorien">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+
+        <div class="form-group">
+            <label for="topf">Topf</label>
+            <select id="topf" name="topf" required>
+                {#for t in toepfe}
+                    <option value="{t}">{t}</option>
+                {/for}
+            </select>
+        </div>
+
+        <button type="submit">Speichern</button>
+    </form>
+{/if}
+{/body}
+{/include}

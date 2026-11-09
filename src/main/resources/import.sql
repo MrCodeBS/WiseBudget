@@ -80,3 +80,19 @@ INSERT INTO Kategorie (budget_id, name, topf) VALUES (1, 'Miete & Nebenkosten', 
 INSERT INTO Kategorie (budget_id, name, topf) VALUES (1, 'Lebensmittel', 'NEEDS');
 INSERT INTO Kategorie (budget_id, name, topf) VALUES (1, 'Ausgang & Freizeit', 'WANTS');
 INSERT INTO Kategorie (budget_id, name, topf) VALUES (1, 'Notgroschen', 'SPAREN');
+
+-- Beispiel-Einkommen für 2026-11
+INSERT INTO Einkommen (benutzer_id, budget_id, monat, brutto, steuer, netto)
+VALUES (2, 1, '2026-11', 1200.00, 82.80, 1117.20);
+INSERT INTO Einkommen (benutzer_id, budget_id, monat, brutto, steuer, netto)
+VALUES (3, 1, '2026-11', 4200.00, 831.60, 3368.40);
+
+-- Beispiel-Transaktionen für 2026-11
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (1, 1, 3, 1600.00, '2026-11-01', 'Monatsmiete November');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (1, 2, 2, 145.50, '2026-11-04', 'Wocheneinkauf Migros');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (1, 3, 2, 48.00, '2026-11-06', 'Kino und Pizza');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (1, 4, 3, 500.00, '2026-11-02', 'Überweisung Sparkonto');
