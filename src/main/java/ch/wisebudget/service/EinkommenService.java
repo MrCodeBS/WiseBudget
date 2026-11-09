@@ -24,6 +24,7 @@ public class EinkommenService {
 
     private static final BigDecimal AHV_ALV_SATZ = new BigDecimal("6.40");
     private static final BigDecimal HUNDERT = new BigDecimal("100");
+    private static final BigDecimal MAX_BETRAG = new BigDecimal("9999999999.99");
 
     @Inject
     EinkommenRepository einkommenRepository;
@@ -79,13 +80,16 @@ public class EinkommenService {
         LocalDate ersterTag = jahrMonat.atDay(1);
         int alter = Period.between(benutzer.getGeburtsdatum(), ersterTag).getYears();
 
-        Steuerregel regel = steuerregelRepository.findPassendeRegel(
-                benutzer.getKanton(),
-                benutzer.getErwerbsstatus(),
-                alter,
-                brutto,
-                ersterTag.getYear()
-        );
+        Steuerregel regel = null;
+        if (brutto.compareTo(MAX_BETRAG) <= 0) {
+            regel = steuerregelRepository.findPassendeRegel(
+                    benutzer.getKanton(),
+                    benutzer.getErwerbsstatus(),
+                    alter,
+                    brutto,
+                    ersterTag.getYear()
+            );
+        }
 
         if (regel == null) {
             throw new IllegalArgumentException(

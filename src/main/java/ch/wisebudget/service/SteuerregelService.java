@@ -35,11 +35,14 @@ public class SteuerregelService {
                 || einkommenBis == null || satzProzent == null) {
             throw new IllegalArgumentException("Bitte alle Felder für die Steuerregel ausfüllen.");
         }
-        if (alterVon < 0 || alterBis < alterVon
+        if (alterVon < 0 || alterBis < alterVon || alterBis > 120
                 || einkommenVon.compareTo(BigDecimal.ZERO) < 0
                 || einkommenBis.compareTo(einkommenVon) < 0
-                || satzProzent.compareTo(BigDecimal.ZERO) < 0) {
-            throw new IllegalArgumentException("Ungültige Bereichswerte für Alter, Einkommen oder Steuersatz.");
+                || einkommenBis.compareTo(new BigDecimal("9999999999.99")) > 0
+                || satzProzent.compareTo(BigDecimal.ZERO) < 0
+                || satzProzent.compareTo(new BigDecimal("100")) > 0
+                || gueltigJahr < 2000 || gueltigJahr > 2100) {
+            throw new IllegalArgumentException("Ungültige Bereichswerte für Alter, Einkommen, Steuersatz oder Jahr.");
         }
 
         Steuerregel regel = new Steuerregel();
