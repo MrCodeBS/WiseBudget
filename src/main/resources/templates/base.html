@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>{#insert title}WiseBudget{/insert}</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="container">
+    <nav>
+        {#if aktuellerBenutzer??}
+            <a href="/budgets">Übersicht</a>
+            <a href="/budgets">Budgets</a>
+            <a href="/profil">Profil</a>
+            {#if aktuellerBenutzer.rolle.name == 'ADMIN'}
+                <a href="/admin">Admin</a>
+            {/if}
+            <a href="/logout">Logout ({aktuellerBenutzer.name})</a>
+        {#else}
+            <a href="/login.html">Login</a>
+            <a href="/registrieren">Registrieren</a>
+        {/if}
+    </nav>
+
+    {#insert body}{/insert}
+</div>
+</body>
+</html>

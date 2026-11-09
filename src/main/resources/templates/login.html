@@ -1,0 +1,30 @@
+{#include base}
+{#title}Login - WiseBudget{/title}
+{#body}
+<h1>Login</h1>
+
+{#if error}
+    <div class="fehler">E-Mail oder Passwort ist ungültig.</div>
+{/if}
+
+{#if registered}
+    <div class="erfolg">Registrierung erfolgreich. Bitte jetzt einloggen.</div>
+{/if}
+
+<form method="post" action="/j_security_check">
+    <div class="form-group">
+        <label for="j_username">E-Mail</label>
+        <input type="email" id="j_username" name="j_username" required>
+    </div>
+
+    <div class="form-group">
+        <label for="j_password">Passwort</label>
+        <input type="password" id="j_password" name="j_password" required>
+    </div>
+
+    <button type="submit">Einloggen</button>
+</form>
+
+<p>Noch kein Konto? <a href="/registrieren">Hier registrieren</a></p>
+{/body}
+{/include}
