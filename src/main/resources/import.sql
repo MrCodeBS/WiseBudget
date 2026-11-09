@@ -296,7 +296,7 @@ VALUES (2, 1, '2026-11', 1200.00, 82.80, 1117.20);
 INSERT INTO Einkommen (benutzer_id, budget_id, monat, brutto, steuer, netto)
 VALUES (3, 1, '2026-11', 4200.00, 831.60, 3368.40);
 
--- Beispiel-Transaktionen für 2026-11
+-- Beispiel-Transaktionen für 2026-11 (Budget 1: WG Budget Zürich)
 INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
 VALUES (1, 1, 3, 1600.00, '2026-11-01', 'Monatsmiete November');
 INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
@@ -305,3 +305,66 @@ INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, 
 VALUES (1, 3, 2, 48.00, '2026-11-06', 'Kino und Pizza');
 INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
 VALUES (1, 4, 3, 500.00, '2026-11-02', 'Überweisung Sparkonto');
+
+-- 2. Beispielbudget: Lehrlingsbudget Lukas (gemäss Budgetberatung-Vorlage, Nettolohn 1018.00 CHF)
+INSERT INTO Budget (name, typ, needsProzent, wantsProzent, sparenProzent, version)
+VALUES ('Lehrlingsbudget Lukas', 'PRIVAT', 50.00, 30.00, 20.00, 0);
+
+INSERT INTO Budgetmitglied (benutzer_id, budget_id, berechtigung)
+VALUES (2, 2, 'BESITZER');
+
+-- Kategorien für Lehrlingsbudget (budget_id = 2, kategorie_id = 5..19)
+-- Fixkosten & Grundbedarf (NEEDS)
+INSERT INTO Kategorie (budget_id, name, topf) VALUES (2, 'Krankenkasse (Grundversicherung)', 'NEEDS');
+INSERT INTO Kategorie (budget_id, name, topf) VALUES (2, 'Fahrkosten', 'NEEDS');
+INSERT INTO Kategorie (budget_id, name, topf) VALUES (2, 'Anteil Kost und Logis (Eltern)', 'NEEDS');
+INSERT INTO Kategorie (budget_id, name, topf) VALUES (2, 'Handy', 'NEEDS');
+INSERT INTO Kategorie (budget_id, name, topf) VALUES (2, 'Schulmaterial', 'NEEDS');
+INSERT INTO Kategorie (budget_id, name, topf) VALUES (2, 'Auswärtige Verpflegung', 'NEEDS');
+-- Persönliche Auslagen (WANTS)
+INSERT INTO Kategorie (budget_id, name, topf) VALUES (2, 'Taschengeld/Diverses', 'WANTS');
+INSERT INTO Kategorie (budget_id, name, topf) VALUES (2, 'Kleider/Schuhe', 'WANTS');
+INSERT INTO Kategorie (budget_id, name, topf) VALUES (2, 'Coiffeur/Körperpflege', 'WANTS');
+INSERT INTO Kategorie (budget_id, name, topf) VALUES (2, 'PC (Unterhalt)', 'WANTS');
+INSERT INTO Kategorie (budget_id, name, topf) VALUES (2, 'Sport/Musik', 'WANTS');
+-- Rückstellungen (SPAREN)
+INSERT INTO Kategorie (budget_id, name, topf) VALUES (2, 'Jahresfranchise/Selbstbehalt (Krankenkasse)', 'SPAREN');
+INSERT INTO Kategorie (budget_id, name, topf) VALUES (2, 'Zahnarzt/Optiker/Medikamente', 'SPAREN');
+INSERT INTO Kategorie (budget_id, name, topf) VALUES (2, 'Steuern', 'SPAREN');
+INSERT INTO Kategorie (budget_id, name, topf) VALUES (2, 'Ferien/Sparen', 'SPAREN');
+
+-- Einkommen für Lehrlingsbudget Lukas (2026-11: Brutto 1093.45 CHF -> 6.90% Abzug -> Netto 1018.00 CHF)
+INSERT INTO Einkommen (benutzer_id, budget_id, monat, brutto, steuer, netto)
+VALUES (2, 2, '2026-11', 1093.45, 75.45, 1018.00);
+
+-- Transaktionen für Lehrlingsbudget Lukas (2026-11 gemäss PDF-Tabelle)
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (2, 5, 2, 80.00, '2026-11-01', 'Krankenkasse Grundversicherung');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (2, 6, 2, 80.00, '2026-11-01', 'ZVV Monatsabo');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (2, 7, 2, 120.00, '2026-11-01', 'Kost und Logis Eltern');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (2, 8, 2, 30.00, '2026-11-03', 'Handy-Abo');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (2, 9, 2, 10.00, '2026-11-05', 'Schulmaterial Berufsschule');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (2, 10, 2, 120.00, '2026-11-10', 'Mittagessen auswärts');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (2, 11, 2, 150.00, '2026-11-12', 'Taschengeld & Ausgang');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (2, 12, 2, 90.00, '2026-11-14', 'Winterjacke und Schuhe');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (2, 13, 2, 50.00, '2026-11-15', 'Coiffeur & Pflegeprodukte');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (2, 14, 2, 30.00, '2026-11-16', 'PC-Zubehör & Cloud');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (2, 15, 2, 50.00, '2026-11-18', 'Fitness-Abo & Musik');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (2, 16, 2, 20.00, '2026-11-25', 'Rückstellung Franchise Krankenkasse');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (2, 17, 2, 20.00, '2026-11-25', 'Rückstellung Zahnarzt/Optiker');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (2, 18, 2, 10.00, '2026-11-25', 'Rückstellung Steuern');
+INSERT INTO Transaktion (budget_id, kategorie_id, erfasstVon_id, betrag, datum, beschreibung)
+VALUES (2, 19, 2, 150.00, '2026-11-25', 'Überweisung Ferien- und Sparkonto');

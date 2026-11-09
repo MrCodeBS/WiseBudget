@@ -10,6 +10,7 @@ import ch.wisebudget.entity.Budget;
 import ch.wisebudget.entity.BudgetTyp;
 import ch.wisebudget.entity.Budgetmitglied;
 import ch.wisebudget.entity.Einkommen;
+import ch.wisebudget.entity.Kategorie;
 import ch.wisebudget.entity.Topf;
 import ch.wisebudget.entity.Transaktion;
 import ch.wisebudget.repository.BenutzerRepository;
@@ -103,7 +104,7 @@ public class BudgetService {
 
     @Transactional
     public Budget budgetErstellen(String name, BudgetTyp typ, BigDecimal needsProzent,
-                                  BigDecimal wantsProzent, BigDecimal sparenProzent) {
+                                  BigDecimal wantsProzent, BigDecimal sparenProzent, String vorlage) {
         Benutzer ersteller = benutzerService.getAktuellerBenutzer();
         BigDecimal needs = needsProzent != null ? needsProzent : new BigDecimal("50.00");
         BigDecimal wants = wantsProzent != null ? wantsProzent : new BigDecimal("30.00");
@@ -125,7 +126,51 @@ public class BudgetService {
         mitglied.setBerechtigung(Berechtigung.BESITZER);
         budgetmitgliedRepository.persist(mitglied);
 
+        erstelleVorlageKategorien(budget, vorlage);
+
         return budget;
+    }
+
+    private void erstelleVorlageKategorien(Budget budget, String vorlage) {
+        if ("LEHRLING".equalsIgnoreCase(vorlage)) {
+            // Fixkosten & Grundbedarf (NEEDS)
+            speichereKategorie(budget, "Krankenkasse (Grundversicherung)", Topf.NEEDS);
+            speichereKategorie(budget, "Fahrkosten", Topf.NEEDS);
+            speichereKategorie(budget, "Anteil Kost und Logis (Eltern)", Topf.NEEDS);
+            speichereKategorie(budget, "Handy", Topf.NEEDS);
+            speichereKategorie(budget, "Schulmaterial", Topf.NEEDS);
+            speichereKategorie(budget, "Auswärtige Verpflegung", Topf.NEEDS);
+            // Persönliche Auslagen (WANTS)
+            speichereKategorie(budget, "Taschengeld/Diverses", Topf.WANTS);
+            speichereKategorie(budget, "Kleider/Schuhe", Topf.WANTS);
+            speichereKategorie(budget, "Coiffeur/Körperpflege", Topf.WANTS);
+            speichereKategorie(budget, "PC (Unterhalt)", Topf.WANTS);
+            speichereKategorie(budget, "Sport/Musik", Topf.WANTS);
+            // Rückstellungen (SPAREN)
+            speichereKategorie(budget, "Jahresfranchise/Selbstbehalt (Krankenkasse)", Topf.SPAREN);
+            speichereKategorie(budget, "Zahnarzt/Optiker/Medikamente", Topf.SPAREN);
+            speichereKategorie(budget, "Steuern", Topf.SPAREN);
+            speichereKategorie(budget, "Ferien/Sparen", Topf.SPAREN);
+        } else if ("WG".equalsIgnoreCase(vorlage)) {
+            speichereKategorie(budget, "Miete & Nebenkosten", Topf.NEEDS);
+            speichereKategorie(budget, "Lebensmittel & Haushalt", Topf.NEEDS);
+            speichereKategorie(budget, "Internet, TV & Strom", Topf.NEEDS);
+            speichereKategorie(budget, "Krankenkasse (Grundversicherung)", Topf.NEEDS);
+            speichereKategorie(budget, "Fahrkosten / ÖV", Topf.NEEDS);
+            speichereKategorie(budget, "Ausgang & Freizeit", Topf.WANTS);
+            speichereKategorie(budget, "Ferien & Ausflüge", Topf.WANTS);
+            speichereKategorie(budget, "Kleider & Persönliches", Topf.WANTS);
+            speichereKategorie(budget, "Notgroschen", Topf.SPAREN);
+            speichereKategorie(budget, "Rückstellungen (Steuern / Zahnarzt)", Topf.SPAREN);
+        }
+    }
+
+    private void speichereKategorie(Budget budget, String name, Topf topf) {
+        Kategorie kategorie = new Kategorie();
+        kategorie.setBudget(budget);
+        kategorie.setName(name);
+        kategorie.setTopf(topf);
+        kategorieRepository.persist(kategorie);
     }
 
     @Transactional

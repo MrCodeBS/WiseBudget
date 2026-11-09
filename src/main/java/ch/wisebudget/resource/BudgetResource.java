@@ -104,9 +104,10 @@ public class BudgetResource {
                               @RestForm BudgetTyp typ,
                               @RestForm BigDecimal needsProzent,
                               @RestForm BigDecimal wantsProzent,
-                              @RestForm BigDecimal sparenProzent) {
+                              @RestForm BigDecimal sparenProzent,
+                              @RestForm String vorlage) {
         try {
-            budgetService.budgetErstellen(name, typ, needsProzent, wantsProzent, sparenProzent);
+            budgetService.budgetErstellen(name, typ, needsProzent, wantsProzent, sparenProzent, vorlage);
             return Response.seeOther(URI.create("/budgets?erfolg=Budget+wurde+erstellt.")).build();
         } catch (IllegalArgumentException e) {
             TemplateInstance seite = budgets.data("aktuellerBenutzer", benutzerService.getAktuellerBenutzer())
