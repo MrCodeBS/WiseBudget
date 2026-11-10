@@ -2,27 +2,46 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{#insert title}WiseBudget{/insert}</title>
     <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-<div class="container">
-    <nav>
-        {#if aktuellerBenutzer??}
-            <a href="/budgets">Übersicht</a>
-            <a href="/budgets">Budgets</a>
-            <a href="/profil">Profil</a>
-            {#if aktuellerBenutzer.rolle.name == 'ADMIN'}
-                <a href="/admin">Admin</a>
-            {/if}
-            <a href="/logout">Logout ({aktuellerBenutzer.name})</a>
-        {#else}
-            <a href="/login.html">Login</a>
-            <a href="/registrieren">Registrieren</a>
-        {/if}
-    </nav>
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="/budgets" class="brand">
+            <span class="swiss-mark">+</span>
+            <span>WiseBudget</span>
+            <span class="brand-tag">FINANZ-COCKPIT CH</span>
+        </a>
 
+        <nav class="main-nav">
+            {#if aktuellerBenutzer??}
+                <a href="/budgets">Übersicht</a>
+                <a href="/budgets">Budgets</a>
+                <a href="/profil">Profil</a>
+                {#if aktuellerBenutzer.rolle.name == 'ADMIN'}
+                    <a href="/admin">Admin</a>
+                {/if}
+            {#else}
+                <a href="/login.html">Login</a>
+                <a href="/registrieren">Registrieren</a>
+            {/if}
+        </nav>
+
+        {#if aktuellerBenutzer??}
+            <div class="user-meta">
+                <span class="user-chip">{aktuellerBenutzer.name} · {aktuellerBenutzer.kanton.kuerzel} ({aktuellerBenutzer.erwerbsstatus})</span>
+                <nav class="main-nav">
+                    <a href="/logout" class="logout-link">Logout</a>
+                </nav>
+            </div>
+        {/if}
+    </div>
+</header>
+
+<main class="container">
     {#insert body}{/insert}
-</div>
+</main>
 </body>
 </html>

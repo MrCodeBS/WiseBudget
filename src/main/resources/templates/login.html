@@ -1,30 +1,49 @@
 {#include base}
 {#title}Login - WiseBudget{/title}
 {#body}
-<h1>Login</h1>
+<div class="auth-wrapper">
+    <div class="panel">
+        <div class="panel-header">
+            <h2>Anmeldung · WiseBudget Schweiz</h2>
+            <span class="badge badge-PRIVAT">50 / 30 / 20</span>
+        </div>
+        <div class="panel-body">
+            {#if error}
+                <div class="fehler">E-Mail oder Passwort ist ungültig.</div>
+            {/if}
 
-{#if error}
-    <div class="fehler">E-Mail oder Passwort ist ungültig.</div>
-{/if}
+            {#if registered}
+                <div class="erfolg">Registrierung erfolgreich. Bitte jetzt einloggen.</div>
+            {/if}
 
-{#if registered}
-    <div class="erfolg">Registrierung erfolgreich. Bitte jetzt einloggen.</div>
-{/if}
+            <form method="post" action="/j_security_check">
+                <div class="form-group">
+                    <label for="j_username">E-Mail-Adresse</label>
+                    <input type="email" id="j_username" name="j_username" placeholder="name@wisebudget.ch" required autofocus>
+                </div>
 
-<form method="post" action="/j_security_check">
-    <div class="form-group">
-        <label for="j_username">E-Mail</label>
-        <input type="email" id="j_username" name="j_username" required>
+                <div class="form-group">
+                    <label for="j_password">Passwort</label>
+                    <input type="password" id="j_password" name="j_password" required>
+                </div>
+
+                <button type="submit" class="btn-full">Einloggen</button>
+            </form>
+
+            <p style="margin: 14px 0 0 0; text-align: center; font-size: 12.5px; color: var(--text-muted);">
+                Noch kein Konto? <a href="/registrieren">Neues Benutzerkonto registrieren</a>
+            </p>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label for="j_password">Passwort</label>
-        <input type="password" id="j_password" name="j_password" required>
+    <div class="demo-box">
+        <strong>Test-Konten (Passwort für alle: <code>passwort123</code>)</strong>
+        <div style="margin-top: 6px; line-height: 1.7;">
+            <div><code>lukas@wisebudget.ch</code> — Lehrling (ZH) · Besitzer WG &amp; Lehrlingsbudget</div>
+            <div><code>sarah@wisebudget.ch</code> — Angestellt (BE) · Schreiben im WG Budget</div>
+            <div><code>admin@wisebudget.ch</code> — Administrator (Steuerregeln &amp; Benutzer)</div>
+        </div>
     </div>
-
-    <button type="submit">Einloggen</button>
-</form>
-
-<p>Noch kein Konto? <a href="/registrieren">Hier registrieren</a></p>
+</div>
 {/body}
 {/include}

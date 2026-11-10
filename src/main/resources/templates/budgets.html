@@ -1,7 +1,12 @@
 {#include base}
 {#title}Meine Budgets - WiseBudget{/title}
 {#body}
-<h1>Meine Budgets</h1>
+<div class="page-header">
+    <div class="page-title-group">
+        <h1>Meine Budgets</h1>
+        <p class="page-subtitle">Übersicht über alle privaten und gemeinsam geführten Finanzbudgets nach dem 50/30/20-Schlüssel</p>
+    </div>
+</div>
 
 {#if erfolg??}
     <div class="erfolg">{erfolg}</div>
@@ -11,79 +16,99 @@
     <div class="fehler">{fehler}</div>
 {/if}
 
-<table>
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Typ</th>
-        <th>Aufteilung (Needs / Wants / Sparen)</th>
-        <th>Meine Berechtigung</th>
-        <th>Aktionen</th>
-    </tr>
-    </thead>
-    <tbody>
-    {#for m in mitgliedschaften}
-        <tr>
-            <td>{m.budget.name}</td>
-            <td>{m.budget.typ}</td>
-            <td>{m.budget.needsProzent}% / {m.budget.wantsProzent}% / {m.budget.sparenProzent}%</td>
-            <td>{m.berechtigung}</td>
-            <td>
-                <a href="/budgets/{m.budget.id}">Übersicht</a> |
-                <a href="/budgets/{m.budget.id}/einkommen">Einkommen</a> |
-                <a href="/budgets/{m.budget.id}/kategorien">Kategorien</a> |
-                <a href="/budgets/{m.budget.id}/mitglieder">Mitglieder</a>
-            </td>
-        </tr>
-    {#else}
-        <tr>
-            <td colspan="5">Noch keine Budgets vorhanden.</td>
-        </tr>
-    {/for}
-    </tbody>
-</table>
-
-<h2>Neues Budget erstellen</h2>
-<form method="post" action="/budgets">
-    <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" required>
+<div class="workspace-grid">
+    <div class="workspace-main">
+        <div class="panel">
+            <div class="panel-header">
+                <h2>Freigegebene &amp; eigene Budgets</h2>
+                <span class="badge badge-PRIVAT">{mitgliedschaften.size} Mandanten</span>
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Budgetname</th>
+                    <th>Typ</th>
+                    <th class="num">Aufteilung (Needs / Wants / Sparen)</th>
+                    <th>Berechtigung</th>
+                    <th class="num">Navigation</th>
+                </tr>
+                </thead>
+                <tbody>
+                {#for m in mitgliedschaften}
+                    <tr>
+                        <td>
+                            <a href="/budgets/{m.budget.id}" style="font-weight: 600; color: var(--text-main);">{m.budget.name}</a>
+                        </td>
+                        <td><span class="badge badge-{m.budget.typ}">{m.budget.typ}</span></td>
+                        <td class="num">{m.budget.needsProzent}% / {m.budget.wantsProzent}% / {m.budget.sparenProzent}%</td>
+                        <td><span class="badge badge-{m.berechtigung}">{m.berechtigung}</span></td>
+                        <td class="num">
+                            <a href="/budgets/{m.budget.id}" class="btn btn-sm">Cockpit öffnen</a>
+                            <a href="/budgets/{m.budget.id}/einkommen" class="btn btn-secondary btn-sm">Einkommen</a>
+                            <a href="/budgets/{m.budget.id}/kategorien" class="btn btn-secondary btn-sm">Kategorien</a>
+                            <a href="/budgets/{m.budget.id}/mitglieder" class="btn btn-secondary btn-sm">Mitglieder</a>
+                        </td>
+                    </tr>
+                {#else}
+                    <tr>
+                        <td colspan="5">Noch keine Budgets vorhanden. Erstelle rechts dein erstes Budget.</td>
+                    </tr>
+                {/for}
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="form-group">
-        <label for="typ">Typ</label>
-        <select id="typ" name="typ" required>
-            {#for t in budgetTypen}
-                <option value="{t}">{t}</option>
-            {/for}
-        </select>
-    </div>
+    <aside class="panel">
+        <div class="panel-header">
+            <h2>Neues Budget erstellen</h2>
+        </div>
+        <div class="panel-body">
+            <form method="post" action="/budgets">
+                <div class="form-group">
+                    <label for="name">Bezeichnung</label>
+                    <input type="text" id="name" name="name" placeholder="z. B. Lehrlingsbudget 2026" required>
+                </div>
 
-    <div class="form-group">
-        <label for="vorlage">Kategorien-Vorlage</label>
-        <select id="vorlage" name="vorlage">
-            <option value="LEHRLING">Lehrlingsbudget (Fixkosten, Persönliche Auslagen, Rückstellungen)</option>
-            <option value="WG">WG / Paar-Budget</option>
-            <option value="LEER">Leer (ohne Standard-Kategorien)</option>
-        </select>
-    </div>
+                <div class="form-group">
+                    <label for="typ">Mandantentyp</label>
+                    <select id="typ" name="typ" required>
+                        {#for t in budgetTypen}
+                            <option value="{t}">{t}</option>
+                        {/for}
+                    </select>
+                </div>
 
-    <div class="form-group">
-        <label for="needsProzent">Needs (%)</label>
-        <input type="number" step="0.01" id="needsProzent" name="needsProzent" value="50.00" required>
-    </div>
+                <div class="form-group">
+                    <label for="vorlage">Kategorien-Vorlage</label>
+                    <select id="vorlage" name="vorlage">
+                        <option value="LEHRLING">Lehrlingsbudget (Fixkosten, Auslagen, Rückstellungen)</option>
+                        <option value="WG">WG / Paar-Budget</option>
+                        <option value="LEER">Leer (ohne Standard-Kategorien)</option>
+                    </select>
+                </div>
 
-    <div class="form-group">
-        <label for="wantsProzent">Wants (%)</label>
-        <input type="number" step="0.01" id="wantsProzent" name="wantsProzent" value="30.00" required>
-    </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label for="needsProzent">Needs (%)</label>
+                        <input type="number" step="0.01" id="needsProzent" name="needsProzent" value="50.00" required>
+                    </div>
 
-    <div class="form-group">
-        <label for="sparenProzent">Sparen (%)</label>
-        <input type="number" step="0.01" id="sparenProzent" name="sparenProzent" value="20.00" required>
-    </div>
+                    <div class="form-group">
+                        <label for="wantsProzent">Wants (%)</label>
+                        <input type="number" step="0.01" id="wantsProzent" name="wantsProzent" value="30.00" required>
+                    </div>
 
-    <button type="submit">Speichern</button>
-</form>
+                    <div class="form-group">
+                        <label for="sparenProzent">Sparen (%)</label>
+                        <input type="number" step="0.01" id="sparenProzent" name="sparenProzent" value="20.00" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-full">Speichern</button>
+            </form>
+        </div>
+    </aside>
+</div>
 {/body}
 {/include}

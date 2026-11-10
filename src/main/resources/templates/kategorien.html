@@ -1,14 +1,19 @@
 {#include base}
 {#title}Kategorien - {budget.name}{/title}
 {#body}
-<h1>Kategorien: {budget.name}</h1>
+<div class="page-header">
+    <div class="page-title-group">
+        <h1>Kategorienplan (Kostenarten): {budget.name}</h1>
+        <p class="page-subtitle">Zuordnung der Budgetposten zu den drei Töpfen Fixkosten (`NEEDS`), Persönliche Auslagen (`WANTS`) und Rückstellungen (`SPAREN`)</p>
+    </div>
+</div>
 
-<p>
-    <a href="/budgets/{budget.id}">Übersicht</a> |
-    <a href="/budgets/{budget.id}/einkommen">Einkommen</a> |
-    <a href="/budgets/{budget.id}/kategorien">Kategorien</a> |
-    <a href="/budgets/{budget.id}/mitglieder">Mitglieder</a>
-</p>
+<div class="subnav">
+    <a href="/budgets/{budget.id}">Übersicht</a>
+    <a href="/budgets/{budget.id}/einkommen">Einkommen</a>
+    <a href="/budgets/{budget.id}/kategorien" class="active">Kategorien</a>
+    <a href="/budgets/{budget.id}/mitglieder">Mitglieder &amp; Einstellungen</a>
+</div>
 
 {#if erfolg??}
     <div class="erfolg">{erfolg}</div>
@@ -18,68 +23,84 @@
     <div class="fehler">{fehler}</div>
 {/if}
 
-<table>
-    <thead>
-    <tr>
-        <th>Name</th>
-        <th>Topf</th>
-        {#if schreibrecht}
-            <th>Umbenennen / Topf ändern</th>
-            <th>Löschen</th>
-        {/if}
-    </tr>
-    </thead>
-    <tbody>
-    {#for k in kategorienListe}
-        <tr>
-            <td>{k.name}</td>
-            <td>{k.topf}</td>
-            {#if schreibrecht}
-                <td>
-                    <form method="post" action="/budgets/{budget.id}/kategorien/{k.id}/umbenennen">
-                        <input type="text" name="name" value="{k.name}" required>
-                        <select name="topf">
+<div class="workspace-grid">
+    <div class="workspace-main">
+        <div class="panel">
+            <div class="panel-header">
+                <h2>Definierte Kategorien</h2>
+                <span class="badge badge-PRIVAT">{kategorienListe.size} Positionen</span>
+            </div>
+            <table>
+                <thead>
+                <tr>
+                    <th>Bezeichnung</th>
+                    <th>Topf</th>
+                    {#if schreibrecht}
+                        <th>Umbenennen / Topf ändern</th>
+                        <th class="num">Löschen</th>
+                    {/if}
+                </tr>
+                </thead>
+                <tbody>
+                {#for k in kategorienListe}
+                    <tr>
+                        <td style="font-weight: 500;">{k.name}</td>
+                        <td><span class="badge badge-{k.topf}">{k.topf}</span></td>
+                        {#if schreibrecht}
+                            <td>
+                                <form method="post" action="/budgets/{budget.id}/kategorien/{k.id}/umbenennen" class="inline-form">
+                                    <input type="text" name="name" value="{k.name}" required>
+                                    <select name="topf">
+                                        {#for t in toepfe}
+                                            <option value="{t}" {#if t == k.topf}selected{/if}>{t}</option>
+                                        {/for}
+                                    </select>
+                                    <button type="submit" class="btn-secondary btn-sm">Speichern</button>
+                                </form>
+                            </td>
+                            <td class="num">
+                                <form method="post" action="/budgets/{budget.id}/kategorien/{k.id}/loeschen" class="inline-form">
+                                    <button type="submit" class="btn-danger">Löschen</button>
+                                </form>
+                            </td>
+                        {/if}
+                    </tr>
+                {#else}
+                    <tr>
+                        <td colspan="4">Noch keine Kategorien vorhanden.</td>
+                    </tr>
+                {/for}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {#if schreibrecht}
+        <aside class="panel">
+            <div class="panel-header">
+                <h2>Neue Kategorie erstellen</h2>
+            </div>
+            <div class="panel-body">
+                <form method="post" action="/budgets/{budget.id}/kategorien">
+                    <div class="form-group">
+                        <label for="name">Kategoriename</label>
+                        <input type="text" id="name" name="name" placeholder="z. B. Krankenkasse" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="topf">Zugeordneter Topf</label>
+                        <select id="topf" name="topf" required>
                             {#for t in toepfe}
-                                <option value="{t}" {#if t == k.topf}selected{/if}>{t}</option>
+                                <option value="{t}">{t}</option>
                             {/for}
                         </select>
-                        <button type="submit">Speichern</button>
-                    </form>
-                </td>
-                <td>
-                    <form method="post" action="/budgets/{budget.id}/kategorien/{k.id}/loeschen">
-                        <button type="submit">Löschen</button>
-                    </form>
-                </td>
-            {/if}
-        </tr>
-    {#else}
-        <tr>
-            <td colspan="4">Noch keine Kategorien vorhanden.</td>
-        </tr>
-    {/for}
-    </tbody>
-</table>
+                    </div>
 
-{#if schreibrecht}
-    <h2>Neue Kategorie erstellen</h2>
-    <form method="post" action="/budgets/{budget.id}/kategorien">
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" required>
-        </div>
-
-        <div class="form-group">
-            <label for="topf">Topf</label>
-            <select id="topf" name="topf" required>
-                {#for t in toepfe}
-                    <option value="{t}">{t}</option>
-                {/for}
-            </select>
-        </div>
-
-        <button type="submit">Speichern</button>
-    </form>
-{/if}
+                    <button type="submit" class="btn-full">Speichern</button>
+                </form>
+            </div>
+        </aside>
+    {/if}
+</div>
 {/body}
 {/include}

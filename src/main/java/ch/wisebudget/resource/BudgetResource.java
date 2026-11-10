@@ -74,6 +74,11 @@ public class BudgetResource {
         List<Einkommen> einkommenListe = einkommenService.einkommenFuerBudgetUndMonat(id, monatString);
         BigDecimal gesamtNetto = budgetService.berechneGesamtNetto(einkommenListe);
         List<Transaktion> transaktionen = transaktionService.transaktionenFuerMonat(id, gewaehlterMonat);
+        var topfZeilen = budgetService.berechneTopfUebersicht(meineMitgliedschaft.getBudget(), gesamtNetto, transaktionen);
+        BigDecimal gesamtAusgegeben = topfZeilen.stream()
+                .map(z -> z.ausgegeben())
+                .reduce(BigDecimal.ZERO.setScale(2), BigDecimal::add);
+        BigDecimal gesamtVerbleibend = gesamtNetto.subtract(gesamtAusgegeben);
 
         return budgetUebersicht.data("aktuellerBenutzer", benutzerService.getAktuellerBenutzer())
                 .data("meineMitgliedschaft", meineMitgliedschaft)
@@ -81,7 +86,9 @@ public class BudgetResource {
                 .data("monat", monatString)
                 .data("heute", LocalDate.now().toString())
                 .data("gesamtNetto", gesamtNetto)
-                .data("topfZeilen", budgetService.berechneTopfUebersicht(meineMitgliedschaft.getBudget(), gesamtNetto, transaktionen))
+                .data("gesamtAusgegeben", gesamtAusgegeben)
+                .data("gesamtVerbleibend", gesamtVerbleibend)
+                .data("topfZeilen", topfZeilen)
                 .data("transaktionen", transaktionen)
                 .data("kategorienListe", kategorieService.kategorienFuerBudget(id))
                 .data("schreibrecht", meineMitgliedschaft.getBerechtigung().hatMindestens(Berechtigung.SCHREIBEN))

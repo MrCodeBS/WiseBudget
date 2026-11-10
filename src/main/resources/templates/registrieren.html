@@ -1,54 +1,68 @@
 {#include base}
 {#title}Registrieren - WiseBudget{/title}
 {#body}
-<h1>Registrieren</h1>
+<div class="auth-wrapper" style="max-width: 520px;">
+    <div class="panel">
+        <div class="panel-header">
+            <h2>Neues Konto registrieren</h2>
+            <span class="badge badge-PRIVAT">ESTV 2026</span>
+        </div>
+        <div class="panel-body">
+            {#if fehler??}
+                <div class="fehler">{fehler}</div>
+            {/if}
 
-{#if fehler??}
-    <div class="fehler">{fehler}</div>
-{/if}
+            <form method="post" action="/registrieren">
+                <div class="form-group">
+                    <label for="name">Vor- und Nachname</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
 
-<form method="post" action="/registrieren">
-    <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" required>
+                <div class="form-group">
+                    <label for="email">E-Mail-Adresse</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="passwort">Passwort (mind. 6 Zeichen)</label>
+                        <input type="password" id="passwort" name="passwort" minlength="6" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="geburtsdatum">Geburtsdatum</label>
+                        <input type="date" id="geburtsdatum" name="geburtsdatum" required>
+                    </div>
+                </div>
+
+                <div class="form-row-2">
+                    <div class="form-group">
+                        <label for="erwerbsstatus">Erwerbsstatus</label>
+                        <select id="erwerbsstatus" name="erwerbsstatus" required>
+                            {#for status in erwerbsstatusListe}
+                                <option value="{status}">{status}</option>
+                            {/for}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="kantonId">Wohnsitzkanton (Steuertarif)</label>
+                        <select id="kantonId" name="kantonId" required>
+                            {#for kanton in kantone}
+                                <option value="{kanton.id}">{kanton.name} ({kanton.kuerzel})</option>
+                            {/for}
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-full">Registrieren</button>
+            </form>
+
+            <p style="margin: 14px 0 0 0; text-align: center; font-size: 12.5px; color: var(--text-muted);">
+                Bereits ein Konto? <a href="/login.html">Zum Login</a>
+            </p>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label for="email">E-Mail</label>
-        <input type="email" id="email" name="email" required>
-    </div>
-
-    <div class="form-group">
-        <label for="passwort">Passwort</label>
-        <input type="password" id="passwort" name="passwort" minlength="6" required>
-    </div>
-
-    <div class="form-group">
-        <label for="geburtsdatum">Geburtsdatum</label>
-        <input type="date" id="geburtsdatum" name="geburtsdatum" required>
-    </div>
-
-    <div class="form-group">
-        <label for="erwerbsstatus">Erwerbsstatus</label>
-        <select id="erwerbsstatus" name="erwerbsstatus" required>
-            {#for status in erwerbsstatusListe}
-                <option value="{status}">{status}</option>
-            {/for}
-        </select>
-    </div>
-
-    <div class="form-group">
-        <label for="kantonId">Kanton</label>
-        <select id="kantonId" name="kantonId" required>
-            {#for kanton in kantone}
-                <option value="{kanton.id}">{kanton.name} ({kanton.kuerzel})</option>
-            {/for}
-        </select>
-    </div>
-
-    <button type="submit">Registrieren</button>
-</form>
-
-<p>Bereits ein Konto? <a href="/login.html">Zum Login</a></p>
+</div>
 {/body}
 {/include}
